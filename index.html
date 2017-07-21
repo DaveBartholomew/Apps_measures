@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  .bar {
+    fill: steelblue;
+  }
+
+  .bar:hover {
+    fill: brown;
+  }
+
+  .axis text {
+    font: 10px sans-serif;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .x.axis path {
+    display: none;
+  }
+</style>
+<body>
+<H1>Apprenticeship statistics by measure, 2010/11 to 2015/16</H1>
+<p>This D3 example allows the user to select the measure of interest between starts, achievements or participation.</p>
+<p>There is also a sort option to range the columns from largest to smallest.</p>
+
+<select onchange="loadData()" id="metric">
+  <option >Starts</option>
+  <option >Achievements</option>
+  <option >Participation</option>
+</select>
+
+<input type=checkbox>Sort</input>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+  var svg = d3.select('body').append('svg')
+              .attr('height', '200')
+              .attr('width', '550');
+  var g = svg.append('g')
+    .attr("transform", "translate(50, 20)");
+
+  g.append('g')
+     .attr('class', 'x axis')
+     .attr('transform', 'translate(0, 150)');
+  g.append('g')
+     .attr('class', 'y axis');
+
+  var parseRow = function(row) {
+    return {
+      year: row.Year,
+      number: parseFloat(row.Number)
+    }
+  };
+  var yearIndex = function(yearName) {
+    var years = {
+      2011: 1, 2012: 2, 2013: 3, 2014:  4, 2015:  5, 2016:  6
+    };
+    return years[yearName];
+  }
+
+
+var loadData = function() {
+  var metric = document.getElementById('metric').selectedOptions[0].text;
+  var dataFile = metric + '.csv'
+  d3.csv(dataFile, parseRow, function(data) {
+  //var dataFile = 'data/' + metric + '.tsv'
+  //d3.tsv(dataFile, parseRow, function(data) {
+    var years = data.map(function(d) { return d.year })
+    var x = d3.scale.ordinal()
+            .rangeRoundBands([0, 400], .1)
+            .domain(years);
+
+    var numbers = data.map(function(d) { return d.number });
+    var y = d3.scale.linear()
+            .range([150, 0])
+            .domain([0, d3.max(numbers)]);
+
+    var rect = g.selectAll('.bar').data(data);
+    rect.enter().append('rect');
+    rect.exit().remove();
+    rect.attr('class', 'bar')
+        .attr('width', x.rangeBand())
+        .attr('height', function(d) { return 150 - y(d.number)})
+        .attr('x', function(d) { return x(d.year) })
+        .attr('y', function(d) { return y(d.number) });
+
+    var xAxis = d3.svg.axis()
+                  .scale(x)
+                  .orient('bottom');
+
+    var yAxis = d3.svg.axis()
+                  .scale(y)
+                  .orient('left')
+                  .tickFormat(d3.format('.0'));
+
+    d3.select('.x.axis').call(xAxis);
+    d3.select('.y.axis').call(yAxis);
+
+    d3.select('input').on('change', function() {
+      var sortByNumber = function(a, b) { return b.number - a.number; };
+      var sortByYear = function(a, b) { return d3.ascending(yearIndex(a.year), yearIndex(b.year)); };
+      var sortedYears = data.sort(this.checked ? sortByNumber : sortByYear)
+                         .map(function(d) { return d.year; })
+      x.domain(sortedYears)
+
+      var transition = svg.transition().duration(750);
+      var delay = function(d, i) { return i * 50; };
+
+      transition.selectAll(".bar")
+          .delay(delay)
+          .attr("x", function(d) { return x(d.year); });
+
+      transition.select(".x.axis")
+          .call(xAxis)
+        .selectAll("g")
+          .delay(delay);
+    })
+
+  })
+}
+
+loadData()
+</script>
+</body>
+
+
