@@ -101,7 +101,7 @@ var loadData = function() {
     rect.exit().remove();
     rect.attr('class', 'bar')
         .attr('width', x.rangeBand())
-        .attr('height', function(d) { return 150 - y(d.number)})
+        .attr('height', function(d) { return 250 - y(d.number)})
         .attr('x', function(d) { return x(d.year) })
         .attr('y', function(d) { return y(d.number) });
 
