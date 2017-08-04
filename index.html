@@ -55,7 +55,7 @@
 <script>
 
   var svg = d3.select('body').append('svg')
-              .attr('height', '300')
+              .attr('height', '200')
               .attr('width', '550');
   var g = svg.append('g')
     .attr("transform", "translate(50, 20)");
@@ -101,7 +101,7 @@ var loadData = function() {
     rect.exit().remove();
     rect.attr('class', 'bar')
         .attr('width', x.rangeBand())
-        .attr('height', function(d) { return 250 - y(d.number)})
+        .attr('height', function(d) { return 150 - y(d.number)})
         .attr('x', function(d) { return x(d.year) })
         .attr('y', function(d) { return y(d.number) });
 
