@@ -69,7 +69,7 @@
 
   g.append('g')
      .attr('class', 'x axis')
-     .attr('transform', 'translate(0, 150)');
+     .attr('transform', 'translate(0, 350)');
   g.append('g')
      .attr('class', 'y axis');
 
@@ -100,7 +100,7 @@ var loadData = function() {
 
     var numbers = data.map(function(d) { return d.number });
     var y = d3.scale.linear()
-            .range([150, 0])
+            .range([350, 0])
             .domain([0, d3.max(numbers)]);
 
     var rect = g.selectAll('.bar').data(data);
@@ -108,7 +108,7 @@ var loadData = function() {
     rect.exit().remove();
     rect.attr('class', 'bar')
         .attr('width', x.rangeBand())
-        .attr('height', function(d) { return 150 - y(d.number)})
+        .attr('height', function(d) { return 350 - y(d.number)})
         .attr('x', function(d) { return x(d.year) })
         .attr('y', function(d) { return y(d.number) });
 
