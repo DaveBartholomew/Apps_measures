@@ -100,7 +100,7 @@ var loadData = function() {
 
     var numbers = data.map(function(d) { return d.number });
     var y = d3.scale.linear()
-            .range([350, 0])
+            .range([400, 0])
             .domain([0, d3.max(numbers)]);
 
     var rect = g.selectAll('.bar').data(data);
@@ -108,7 +108,7 @@ var loadData = function() {
     rect.exit().remove();
     rect.attr('class', 'bar')
         .attr('width', x.rangeBand())
-        .attr('height', function(d) { return 350 - y(d.number)})
+        .attr('height', function(d) { return 400 - y(d.number)})
         .attr('x', function(d) { return x(d.year) })
         .attr('y', function(d) { return y(d.number) });
 
